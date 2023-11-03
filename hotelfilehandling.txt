@@ -1,0 +1,227 @@
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<stdio.h>
+using namespace std;
+
+class Bill
+{
+
+    int id;
+    int duration;
+    int cid;
+    float amount;
+    float discount;
+    float gst;
+    char checkindate[10];
+    char checkoutdate[10];
+
+public:
+    void setdata()
+    {
+        cout<<"Enter Bill ID : ";
+        cin>>id;
+        cout<<"Enter Duration : ";
+        cin>>duration;
+        cout<<"Enter Customer ID : ";
+        cin>>cid;
+        cout<<"Enter Bill Amount : ";
+        cin>>amount;
+        cout<<"Enter Discount Offered : ";
+        cin>>discount;
+        cout<<"Tax amount : ";
+        cin>>gst;
+        cout<<"Enter check in date : ";
+        fflush(stdin);
+        cin.getline(checkindate,10);
+        cout<<"Enter check out date : ";
+        fflush(stdin);
+        cin.getline(checkoutdate,10);
+    }
+
+    void showdata()
+    {
+        cout<<"\nBill ID : "<<id;
+        cout<<"\nDuration : "<<duration;
+        cout<<"\nCustomer ID : "<<cid;
+        cout<<"\nBill Amount : "<<amount;
+        cout<<"\nDiscount offered : "<<discount;
+        cout<<"\nTax on Bill : "<<gst;
+        cout<<"\nCustomer Check In Date : "<<checkindate;
+        cout<<"\nCustomer Check Out Date : "<<checkoutdate;
+    }
+
+
+    int retid()
+    {
+        return id;
+    }
+};
+
+
+
+void write_record_bill()
+{
+    ofstream outFile;
+    outFile.open("bill.dat", ios::binary | ios::app);
+
+    Bill obj;
+    obj.setData();
+
+    outFile.write((char*)&obj, sizeof(obj));
+
+    outFile.close();
+}
+
+
+void display_bill()
+{
+    ifstream inFile;
+    inFile.open("bill.dat", ios::binary);
+
+    Bill obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        obj.showData();
+    }
+
+    inFile.close();
+}
+
+
+void search(int n)
+{
+    ifstream inFile;
+    inFile.open("bill.dat", ios::binary);
+
+    Bill obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retid() == n)
+        {
+            obj.showData();
+        }
+    }
+
+    inFile.close();
+}
+
+void delete_record_bill(int n)
+{
+    Bill obj;
+    ifstream inFile;
+    inFile.open("bill.dat", ios::binary);
+
+    ofstream outFile;
+    outFile.open("temp.dat", ios::out | ios::binary);
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retid() != n)
+        {
+            outFile.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    remove("bill.dat");
+    rename("temp.dat", "bill.dat");
+}
+
+
+void modify_record_bill(int n)
+{
+    fstream file;
+    file.open("bill.dat",ios::in | ios::out);
+
+    Bill obj;
+
+    while(file.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retid() == n)
+        {
+            cout << "\nEnter the new details of Bill : ";
+            obj.setData();
+
+            int pos = -1 * sizeof(obj);
+            file.seekp(pos, ios::cur);
+
+            file.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    file.close();
+}
+
+
+
+int main()
+{
+    int ch = 0;
+    while(ch!=4)
+    {
+
+        cout<<"Enter your Choice :";
+        cout<<"1.Customer : ";
+        cout<<"2.Rooms  : ";
+        cout<<"3.Bill : ";
+        cout<<"4.Exit : ";
+        cin>>ch;
+
+        switch(ch)
+        {
+
+        case 1 :
+
+        case 2 :
+
+        case 3 :
+            int pr = 0;
+            while(pr!=6)
+            {
+
+                cout<<"Enter your Choice :";
+                cout<<"1.Want to write records : ";
+                cout<<"2.List Of Records : ";
+                cout<<"3.Search Records : ";
+                cout<<"4.Delete Records : ";
+                cout<<"5.Modify Records : ";
+                cout<<"6.Exit : ";
+                cin>>pr;
+
+                switch(pr)
+                {
+
+                case 1: write_record_bill();
+                        break;
+                case 2: cout << "\nList of records";
+                        display_bill();
+                        break;
+                case 3:int f;
+                       cout<<"\n Enter ID no You Want To Search :";
+                       cin>>f;
+                       cout << "\nSearch result";
+                       search(f);
+                       break;
+                case 4: int d;
+                        cout<<"Enter a ID no to delete : ";
+                        cin>>d;
+                        delete_record_bill(d);
+                        cout << "\nRecord Deleted";
+                        break;
+                case 5: cout << "\nModify Record 101 ";
+                        modify_record_bill(101);
+                case 6: break;
+                }
+            }
+                 break;
+
+                }
+
+            }
+
+        }

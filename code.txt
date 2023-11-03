@@ -1,0 +1,282 @@
+#include<iostream>
+#include<fstream>
+#include<stdio.h>
+#include<cstdio>
+using namespace std;
+
+class Customer
+{
+    int cid;
+    char name[50];
+    int age;
+    char gen[10];
+    int mob;
+
+    void setData(){
+
+    cout<<"\n\n\tEnter the details of customer ";
+    cout<<"\n\tEnter the ID of customer ";
+    cin>>cid;
+
+    fflush(stdin);
+      cout<<"\n\tEnter the name of customer ";
+      cin.getline(name,50);
+
+      fflush(stdin);
+        cout<<"\n\tEnter the gender of customer ";
+        cin.getline(gen,10);
+
+        cout<<"\n\tEnter the mobile number of customer ";
+        cin>>mob;
+
+    }
+    void showData(){
+        cout<<"\n\n\tDetails of customer are following: ";
+        cout<<"\n\tID of customer is :"<<cid;
+        cout<<"\n\tName  of customer is :"<<name;
+        cout<<"\n\tGender of customer is :"<<gen;
+        cout<<"\n\tMobile number of customer is :"<<mob;
+
+}
+    int retcid()
+    {
+    return cid;
+    }
+};
+
+class Room{
+
+   int rid;
+   char rtype[50];
+   int Floor;
+
+   void setRData{
+   cout<<"\n\n\tEnter the details of room: ";
+
+   cout<<"\n\tEnter the ID of the room: ";
+   cin>>rid;
+
+   fflush(getsin);
+   cout<<"\n\tEnter the room type: ";
+   cin.getline(rtype,50);
+
+   cout<<"\n\tEnter the floor of the room: ";
+   cin>>Floor;
+   }
+
+void showRData(){
+
+    cout<<"\n\n\tDetails of the room are following: ";
+
+    cout<<"\n\tId of the room is: "<<rid;
+    cout<<"\n\tRoom type: "<<rtype;
+    cout<<"\n\tFloor of the room is: "<<Floor;
+}
+
+  int retrid()
+  {
+  return rid;
+  }
+
+
+};
+
+void write_record_customer()
+{
+    ofstream outFile;
+    outFile.open("customer.dat", ios::binary | ios::app);
+
+    customer obj;
+    obj.setData();
+
+    outFile.write((char*)&obj, sizeof(obj));
+
+    outFile.close();
+}
+
+
+void display()
+{
+    ifstream inFile;
+    inFile.open("customer.dat", ios::binary);
+
+    customer obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        obj.showData();
+    }
+
+    inFile.close();
+}
+
+
+void search(int n)
+{
+    ifstream inFile;
+    inFile.open("customer.dat", ios::binary);
+
+    customer obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retcid() == n)
+        {
+            obj.showData();
+        }
+    }
+
+    inFile.close();
+}
+
+
+void delete_record(int n)
+{
+    Customer obj;
+    ifstream inFile;
+    inFile.open("customer.dat", ios::binary);
+
+    ofstream outFile;
+    outFile.open("temp.dat", ios::out | ios::binary);
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retcid() != n)
+        {
+            outFile.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    remove("customer.dat");
+    rename("temp.dat", "customer.dat");
+}
+
+
+void modify_record(int n)
+{
+    fstream file;
+    file.open("customer.dat",ios::in | ios::out);
+
+    Customer obj;
+
+    while(file.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retcido() == n)
+        {
+            cout << "\nEnter the new details of Customer";
+            obj.setData();
+
+            int pos = -1 * sizeof(obj);
+            file.seekp(pos, ios::cur);
+
+            file.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    file.close();
+}
+
+
+void write_record()
+{
+    ofstream outFile;
+    outFile.open("room.dat", ios::binary | ios::app);
+
+    Room obj;
+    obj.setData();
+
+    outFile.write((char*)&obj, sizeof(obj));
+
+    outFile.close();
+}
+
+
+void display()
+{
+    ifstream inFile;
+    inFile.open("room.dat", ios::binary);
+
+    Room obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        obj.showRData();
+    }
+
+    inFile.close();
+}
+
+
+void search_room(int n)
+{
+    ifstream inFile;
+    inFile.open("room.dat", ios::binary);
+
+    Room obj;
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retcid() == n)
+        {
+            obj.showRData();
+        }
+    }
+
+    inFile.close();
+}
+
+
+void delete_record_room(int n)
+{
+    Room obj;
+    ifstream inFile;
+    inFile.open("room.dat", ios::binary);
+
+    ofstream outFile;
+    outFile.open("temp.dat", ios::out | ios::binary);
+
+    while(inFile.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retrid() != n)
+        {
+            outFile.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    remove("room.dat");
+    rename("temp.dat", "room.dat");
+}
+
+
+void modify_record_room(int n)
+{
+    fstream file;
+    file.open("room.dat",ios::in | ios::out);
+
+    Room obj;
+
+    while(file.read((char*)&obj, sizeof(obj)))
+    {
+        if(obj.retrid() == n)
+        {
+            cout << "\nEnter the new details of Room";
+            obj.setRData();
+
+            int pos = -1 * sizeof(obj);
+            file.seekp(pos, ios::cur);
+
+            file.write((char*)&obj, sizeof(obj));
+        }
+    }
+
+    file.close();
+}
+
+
+
